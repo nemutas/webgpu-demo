@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGPU Demo</title>
+    <link rel="stylesheet" href="./styles/entry.scss" />
+  </head>
+  <body>
+    <main>
+      <site-map>
+        <ul>
+          <li><a>001_fullscreen_texture</a></li>
+          <li><a>002_cube</a></li>
+        </ul>
+      </site-map>
+    </main>
+  </body>
+
+  <script type="module">
+    import { SiteMap } from './scripts/webcomponents/SiteMap'
+    SiteMap.Define()
+  </script>
+</html>

@@ -1,0 +1,35 @@
+@use './mixins/media' as *;
+
+main {
+  padding: 10px;
+}
+
+ul {
+  a {
+    width: fit-content;
+    display: block;
+    font-size: 25px;
+    line-height: 1.6;
+    color: #fff;
+    @include sp {
+      font-size: 20px;
+    }
+  }
+}
+
+webgpu-canvas {
+  position: fixed;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.error-message {
+  font-size: 2rem;
+}
