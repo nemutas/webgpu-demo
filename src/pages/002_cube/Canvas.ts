@@ -34,17 +34,15 @@ export class Canvas extends CanvasBase {
     const vertexColorBufferLayout = this.createVertexColorBufferLayout()
 
     this.camera = new PerspectiveCamera(this.device, { fovDeg: 45, aspect: this.resolution.aspect, near: 0.01, far: 50 })
-    const cameraUniformBindGroupLayout = this.createUniformBindGroupLayout(this.camera.gpuBuffer.size)
-    const cameraUniformBindGroup = this.createBindGroup(cameraUniformBindGroupLayout, this.camera.gpuBuffer)
 
     const localUniformBuffer = createUniformBuffer(this.device, 4 * 16 * 2)
     const localUniformBindGroupLayout = this.createUniformBindGroupLayout(localUniformBuffer.size)
     const localUniformBindGroup = this.createBindGroup(localUniformBindGroupLayout, localUniformBuffer)
     this.writeLocalMatrix(localUniformBuffer)
 
-    const pipeline = this.createPipeline([cameraUniformBindGroupLayout, localUniformBindGroupLayout], [vertexBufferLayout, vertexColorBufferLayout])
+    const pipeline = this.createPipeline([this.camera.bindGroupLayout, localUniformBindGroupLayout], [vertexBufferLayout, vertexColorBufferLayout])
 
-    this.render(pipeline, vertexBuffer, indexBuffer, index.count, localUniformBuffer, cameraUniformBindGroup, localUniformBindGroup, vertexColorBuffer)
+    this.render(pipeline, vertexBuffer, indexBuffer, index.count, localUniformBuffer, localUniformBindGroup, vertexColorBuffer)
 
     window.addEventListener('resize', this.resize.bind(this))
   }
@@ -60,7 +58,6 @@ export class Canvas extends CanvasBase {
     }
   }
 
-  // ================================================
   private createVertexColorBuffer(vertexCount: number) {
     const array = new Float32Array(4 * vertexCount)
     for (let i = 0; i < vertexCount; i++) {
@@ -78,7 +75,6 @@ export class Canvas extends CanvasBase {
       attributes: [{ shaderLocation: 3, offset: 0, format: 'float32x4' }],
     }
   }
-  // ================================================
 
   private createUniformBindGroupLayout(minBindingSize?: number) {
     return this.device.createBindGroupLayout({
@@ -138,7 +134,6 @@ export class Canvas extends CanvasBase {
     indexBuffer: GPUBuffer,
     vertexCount: number,
     localUniformBuffer: GPUBuffer,
-    cameraUniformBindGroup: GPUBindGroup,
     localUniformBindGroup: GPUBindGroup,
     vertexColorBuffer: GPUBuffer,
   ) {
@@ -153,7 +148,7 @@ export class Canvas extends CanvasBase {
     pass.setVertexBuffer(0, vertexBuffer)
     pass.setVertexBuffer(1, vertexColorBuffer)
     pass.setIndexBuffer(indexBuffer, 'uint16')
-    pass.setBindGroup(0, cameraUniformBindGroup)
+    pass.setBindGroup(0, this.camera.bindGroup)
     pass.setBindGroup(1, localUniformBindGroup)
     pass.drawIndexed(vertexCount)
     pass.end()
@@ -161,17 +156,7 @@ export class Canvas extends CanvasBase {
     this.device.queue.submit([encoder.finish()])
 
     requestAnimationFrame(
-      this.render.bind(
-        this,
-        pipeline,
-        vertexBuffer,
-        indexBuffer,
-        vertexCount,
-        localUniformBuffer,
-        cameraUniformBindGroup,
-        localUniformBindGroup,
-        vertexColorBuffer,
-      ),
+      this.render.bind(this, pipeline, vertexBuffer, indexBuffer, vertexCount, localUniformBuffer, localUniformBindGroup, vertexColorBuffer),
     )
   }
 

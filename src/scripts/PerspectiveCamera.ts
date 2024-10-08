@@ -19,6 +19,8 @@ export class PerspectiveCamera {
   public readonly projectionMatrix
   public readonly viewMatrix
   public readonly gpuBuffer: GPUBuffer
+  public readonly bindGroupLayout: GPUBindGroupLayout
+  public readonly bindGroup: GPUBindGroup
 
   constructor(
     private readonly device: GPUDevice,
@@ -30,6 +32,9 @@ export class PerspectiveCamera {
     params.far && (this.far = params.far)
 
     this.gpuBuffer = this.createBuffer()
+    this.bindGroupLayout = this.createUniformBindGroupLayout(this.gpuBuffer.size)
+    this.bindGroup = this.createBindGroup(this.bindGroupLayout, this.gpuBuffer)
+
     this.projectionMatrix = mat4.create()
     this.viewMatrix = mat4.create()
 
@@ -41,6 +46,25 @@ export class PerspectiveCamera {
     return this.device.createBuffer({
       size: 4 * 16 * 2,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    })
+  }
+
+  private createUniformBindGroupLayout(minBindingSize?: number) {
+    return this.device.createBindGroupLayout({
+      entries: [
+        {
+          binding: 0,
+          visibility: GPUShaderStage.VERTEX,
+          buffer: { type: 'uniform', minBindingSize },
+        },
+      ],
+    })
+  }
+
+  private createBindGroup(layout: GPUBindGroupLayout, buffer: GPUBuffer) {
+    return this.device.createBindGroup({
+      layout,
+      entries: [{ binding: 0, resource: { buffer } }],
     })
   }
 
