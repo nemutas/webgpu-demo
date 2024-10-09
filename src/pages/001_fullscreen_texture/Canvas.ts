@@ -1,7 +1,7 @@
-import { CanvasBase } from '@scripts/CanvasBase'
-import { GPU } from '@scripts/gpu'
+import { CanvasBase } from '@scripts/webgpu/core/CanvasBase'
+import { GPU } from '@scripts/webgpu/core/gpu'
 import shader from './render.wgsl'
-import { loadImageBitmap } from '@scripts/loader'
+import { loadImageBitmap } from '@scripts/webgpu/common/loader'
 
 export class Canvas extends CanvasBase {
   constructor(gpu: GPU) {

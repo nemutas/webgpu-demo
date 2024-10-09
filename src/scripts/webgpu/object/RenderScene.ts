@@ -1,4 +1,4 @@
-import { GPU } from './gpu'
+import { GPU } from '../core/gpu'
 
 export class RenderScene {
   private readonly sampleCount = 4
@@ -26,7 +26,7 @@ export class RenderScene {
   private createDepthTexture() {
     return this.gpu.device.createTexture({
       size: this.resolution,
-      format: 'depth24plus',
+      format: 'depth24plus-stencil8',
       usage: GPUTextureUsage.RENDER_ATTACHMENT,
       sampleCount: this.sampleCount,
     })
@@ -48,6 +48,9 @@ export class RenderScene {
         depthClearValue: 1,
         depthLoadOp: 'clear',
         depthStoreOp: 'store',
+        stencilClearValue: 0,
+        stencilLoadOp: 'clear',
+        stencilStoreOp: 'store',
       },
     }
   }
@@ -68,7 +71,7 @@ export class RenderScene {
     return {
       depthWriteEnabled: true,
       depthCompare: 'less',
-      format: 'depth24plus',
+      format: 'depth24plus-stencil8',
     }
   }
 

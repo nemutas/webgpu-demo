@@ -1,20 +1,11 @@
 import { mat4 } from 'wgpu-matrix'
 
-type Params = {
-  fovDeg?: number
-  aspect?: number
-  near?: number
-  far?: number
-}
+type Triple = [number, number, number]
 
-export class PerspectiveCamera {
-  public fovDeg = 45
-  public aspect = 1
-  public near = 0.1
-  public far = 100
-  public position: [number, number, number] = [0, 0, 5]
-  public target: [number, number, number] = [0, 0, 0]
-  public up: [number, number, number] = [0, 1, 0]
+export abstract class Camera {
+  public position: Triple = [0, 0, 5]
+  public target: Triple = [0, 0, 0]
+  public up: Triple = [0, 1, 0]
 
   public readonly projectionMatrix
   public readonly viewMatrix
@@ -22,34 +13,27 @@ export class PerspectiveCamera {
   public readonly bindGroupLayout: GPUBindGroupLayout
   public readonly bindGroup: GPUBindGroup
 
-  constructor(
-    private readonly device: GPUDevice,
-    params: Params,
-  ) {
-    params.fovDeg && (this.fovDeg = params.fovDeg)
-    params.aspect && (this.aspect = params.aspect)
-    params.near && (this.near = params.near)
-    params.far && (this.far = params.far)
+  private readonly positionArray = new Float32Array(3)
 
+  constructor(protected readonly device: GPUDevice) {
     this.gpuBuffer = this.createBuffer()
     this.bindGroupLayout = this.createUniformBindGroupLayout(this.gpuBuffer.size)
     this.bindGroup = this.createBindGroup(this.bindGroupLayout, this.gpuBuffer)
 
     this.projectionMatrix = mat4.create()
-    this.viewMatrix = mat4.create()
 
-    this.updateProjectionMatrix()
+    this.viewMatrix = mat4.create()
     this.updateViewMatrix()
   }
 
-  private createBuffer() {
+  protected createBuffer() {
     return this.device.createBuffer({
-      size: 4 * 16 * 2,
+      size: 4 * 16 * 2 + 4 * 4,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     })
   }
 
-  private createUniformBindGroupLayout(minBindingSize?: number) {
+  protected createUniformBindGroupLayout(minBindingSize?: number) {
     return this.device.createBindGroupLayout({
       entries: [
         {
@@ -61,23 +45,11 @@ export class PerspectiveCamera {
     })
   }
 
-  private createBindGroup(layout: GPUBindGroupLayout, buffer: GPUBuffer) {
+  protected createBindGroup(layout: GPUBindGroupLayout, buffer: GPUBuffer) {
     return this.device.createBindGroup({
       layout,
       entries: [{ binding: 0, resource: { buffer } }],
     })
-  }
-
-  updateProjectionMatrix() {
-    mat4.perspective((this.fovDeg * Math.PI) / 180, this.aspect, this.near, this.far, this.projectionMatrix)
-    // prettier-ignore
-    this.device.queue.writeBuffer(
-      this.gpuBuffer, 
-      4 * 16 * 0,
-      this.projectionMatrix.buffer, 
-      this.projectionMatrix.byteOffset, 
-      this.projectionMatrix.byteLength
-    )
   }
 
   updateViewMatrix() {
@@ -90,5 +62,18 @@ export class PerspectiveCamera {
       this.viewMatrix.byteOffset, 
       this.viewMatrix.byteLength
     )
+
+    // update position
+    this.positionArray.set(this.position)
+    // prettier-ignore
+    this.device.queue.writeBuffer(
+      this.gpuBuffer, 
+      4 * 16 * 2,
+      this.positionArray.buffer, 
+      this.positionArray.byteOffset, 
+      this.positionArray.byteLength
+    )
   }
+
+  abstract updateProjectionMatrix(): void
 }

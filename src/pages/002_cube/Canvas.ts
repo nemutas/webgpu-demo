@@ -1,12 +1,12 @@
 import * as THREE from 'three'
-import { CanvasBase } from '@scripts/CanvasBase'
-import { GPU } from '@scripts/gpu'
+import { CanvasBase } from '@scripts/webgpu/core/CanvasBase'
+import { GPU } from '@scripts/webgpu/core/gpu'
 import shader from './cube.wgsl'
-import { PerspectiveCamera } from '@scripts/PerspectiveCamera'
+import { PerspectiveCamera } from '@scripts/webgpu/object/PerspectiveCamera'
 import { mat4 } from 'wgpu-matrix'
-import { createIndexBuffer, createUniformBuffer, createVertexBuffer } from '@scripts/bufferGenerator'
-import { concatF32Arrays } from '@scripts/utils'
-import { RenderScene } from '@scripts/RenderScene'
+import { createIndexBuffer, createUniformBuffer, createVertexBuffer } from '@scripts/webgpu/common/bufferGenerator'
+import { concatF32Arrays } from '@scripts/webgpu/common/utils'
+import { RenderScene } from '@scripts/webgpu/object/RenderScene'
 
 export class Canvas extends CanvasBase {
   private readonly camera: PerspectiveCamera
@@ -16,6 +16,7 @@ export class Canvas extends CanvasBase {
     super(gpu)
 
     this.scene = new RenderScene(gpu)
+    this.camera = new PerspectiveCamera(this.device, { fovDeg: 45, aspect: this.resolution.aspect, near: 0.01, far: 50 })
 
     // const geometry = new THREE.TorusGeometry(1, 0.3, 50, 100)
     const geometry = new THREE.BoxGeometry()
@@ -32,8 +33,6 @@ export class Canvas extends CanvasBase {
 
     const vertexColorBuffer = this.createVertexColorBuffer(geometry.attributes.position.count)
     const vertexColorBufferLayout = this.createVertexColorBufferLayout()
-
-    this.camera = new PerspectiveCamera(this.device, { fovDeg: 45, aspect: this.resolution.aspect, near: 0.01, far: 50 })
 
     const localUniformBuffer = createUniformBuffer(this.device, 4 * 16 * 2)
     const localUniformBindGroupLayout = this.createUniformBindGroupLayout(localUniformBuffer.size)
@@ -114,14 +113,8 @@ export class Canvas extends CanvasBase {
 
     return this.device.createRenderPipeline({
       layout: this.device.createPipelineLayout({ bindGroupLayouts }),
-      vertex: {
-        module,
-        buffers: vertexBufferLayouts,
-      },
-      fragment: {
-        module,
-        targets: [{ format: this.gpu.presentationFormat }],
-      },
+      vertex: { module, buffers: vertexBufferLayouts },
+      fragment: { module, targets: [{ format: this.gpu.presentationFormat }] },
       primitive: { topology: 'triangle-list', cullMode: 'back' },
       depthStencil: this.scene.pipelineDepthStencilState,
       multisample: this.scene.pipleneMultisampleState,
@@ -160,7 +153,7 @@ export class Canvas extends CanvasBase {
     )
   }
 
-  resize() {
+  private resize() {
     this.scene.resize()
 
     this.camera.aspect = this.resolution.aspect

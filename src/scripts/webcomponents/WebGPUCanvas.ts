@@ -1,5 +1,5 @@
-import { CanvasBase } from '../CanvasBase'
-import { getGPUContexts, GPU } from '../gpu'
+import { CanvasBase } from '../webgpu/core/CanvasBase'
+import { getGPUContexts, GPU } from '../webgpu/core/gpu'
 
 export class WebGPUCanvas extends HTMLElement {
   static Define(Canvas: new (gpu: GPU) => CanvasBase) {

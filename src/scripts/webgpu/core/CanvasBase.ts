@@ -1,4 +1,4 @@
-import { Clock } from './Clock'
+import { Clock } from '../object/Clock'
 import { GPU } from './gpu'
 
 export abstract class CanvasBase {

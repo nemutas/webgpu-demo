@@ -34,6 +34,7 @@ export default defineConfig(() => {
           pagePath('error'),
           pagePath("001_fullscreen_texture"),
           pagePath("002_cube"),
+          pagePath("003_shadow"),
         ],
       },
     },
