@@ -1,3 +1,5 @@
+// https://webgpu.github.io/webgpu-samples/?sample=shadowMapping
+
 import { loadDoracoModel } from '@scripts/webgpu/common/loader'
 import { CanvasBase } from '@scripts/webgpu/core/CanvasBase'
 import { GPU } from '@scripts/webgpu/core/gpu'
