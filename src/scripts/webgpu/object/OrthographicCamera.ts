@@ -18,15 +18,15 @@ export class OrthographicCamera extends Camera {
   public near = 0.1
   public far = 100
 
-  constructor(device: GPUDevice, params: Params) {
+  constructor(device: GPUDevice, params?: Params) {
     super(device)
 
-    params.left && (this.left = params.left)
-    params.right && (this.right = params.right)
-    params.bottom && (this.bottom = params.bottom)
-    params.top && (this.top = params.top)
-    params.near && (this.near = params.near)
-    params.far && (this.far = params.far)
+    params?.left && (this.left = params.left)
+    params?.right && (this.right = params.right)
+    params?.bottom && (this.bottom = params.bottom)
+    params?.top && (this.top = params.top)
+    params?.near && (this.near = params.near)
+    params?.far && (this.far = params.far)
 
     this.updateProjectionMatrix()
   }

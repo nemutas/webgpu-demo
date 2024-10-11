@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGPU Demo</title>
+    <link rel="stylesheet" href="../../styles/entry.scss" />
+  </head>
+  <body>
+    <webgpu-canvas>
+      <canvas></canvas>
+    </webgpu-canvas>
+  </body>
+
+  <script type="module">
+    import { WebGPUCanvas } from '../../scripts/webcomponents/WebGPUCanvas'
+    import { Canvas } from './Canvas'
+    WebGPUCanvas.Define(Canvas)
+  </script>
+</html>

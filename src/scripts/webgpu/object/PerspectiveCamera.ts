@@ -14,13 +14,13 @@ export class PerspectiveCamera extends Camera {
   public near = 0.1
   public far = 100
 
-  constructor(device: GPUDevice, params: Params) {
+  constructor(device: GPUDevice, params?: Params) {
     super(device)
 
-    params.fovDeg && (this.fovDeg = params.fovDeg)
-    params.aspect && (this.aspect = params.aspect)
-    params.near && (this.near = params.near)
-    params.far && (this.far = params.far)
+    params?.fovDeg && (this.fovDeg = params.fovDeg)
+    params?.aspect && (this.aspect = params.aspect)
+    params?.near && (this.near = params.near)
+    params?.far && (this.far = params.far)
 
     this.updateProjectionMatrix()
   }
