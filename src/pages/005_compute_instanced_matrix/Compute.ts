@@ -109,13 +109,13 @@ export class Compute {
     })
   }
 
-  private update(dt: number) {
+  private updateTime(dt: number) {
     this.uniformData.values.set({ time: dt })
-    this.device.queue.writeBuffer(this.uniformData.buffer, 0, this.uniformData.values.arrayBuffer)
+    this.device.queue.writeBuffer(this.uniformData.buffer, this.uniformData.values.views.time.byteOffset, this.uniformData.values.views.time)
   }
 
   render(encoder: GPUCommandEncoder, dt: number) {
-    this.update(dt)
+    this.updateTime(dt)
 
     const pass = encoder.beginComputePass()
     pass.setPipeline(this.pipeline)
