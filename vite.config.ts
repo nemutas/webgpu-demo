@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import glsl from 'vite-plugin-glsl'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-function pagePath(pageName: string) {
+function page(pageName: string) {
   return resolve(__dirname, `src/pages/${pageName}/index.html`)
 }
 
@@ -31,11 +31,12 @@ export default defineConfig(() => {
         // prettier-ignore
         input: [
           resolve(__dirname, 'src/index.html'), 
-          pagePath('error'),
-          pagePath("001_fullscreen_texture"),
-          pagePath("002_cube"),
-          pagePath("003_shadow"),
-          pagePath("004_instance"),
+          page('error'),
+          page("001_fullscreen_texture"),
+          page("002_cube"),
+          page("003_shadow"),
+          page("004_instance"),
+          page("005_compute_instanced_matrix"),
         ],
       },
     },

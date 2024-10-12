@@ -1,3 +1,4 @@
+import { pane } from '@scripts/Gui'
 import { CanvasBase } from '../webgpu/core/CanvasBase'
 import { getGPUContexts, GPU } from '../webgpu/core/gpu'
 
@@ -44,5 +45,6 @@ export class WebGPUCanvas extends HTMLElement {
   disconnectedCallback() {
     this.gpu?.device.destroy()
     this.gpu = undefined
+    pane.dispose()
   }
 }
