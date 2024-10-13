@@ -37,7 +37,7 @@ export class RenderScene {
       colorAttachments: [
         {
           view: this.msaaTexture.createView(),
-          resolveTarget: this.contextView,
+          resolveTarget: this.canvasTextureView,
           clearValue: { r: 0, g: 0, b: 0, a: 1 },
           loadOp: 'clear',
           storeOp: 'store',
@@ -63,7 +63,7 @@ export class RenderScene {
     return [this.gpu.context.canvas.width, this.gpu.context.canvas.height]
   }
 
-  get contextView() {
+  get canvasTextureView() {
     return this.gpu.context.getCurrentTexture().createView()
   }
 
@@ -85,9 +85,9 @@ export class RenderScene {
     this.colorAttachment.clearValue = color
   }
 
-  update() {
+  update(renderTarget?: GPUTexture) {
     this.colorAttachment.view = this.msaaTexture.createView()
-    this.colorAttachment.resolveTarget = this.contextView
+    this.colorAttachment.resolveTarget = renderTarget ? renderTarget.createView() : this.canvasTextureView
     this.renderPassDescriptor.depthStencilAttachment!.view = this.depthTexture.createView()
   }
 

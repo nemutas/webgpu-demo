@@ -35,7 +35,7 @@ export class OrthographicCamera extends Camera {
     mat4.ortho(this.left, this.right, this.bottom, this.top, this.near, this.far, this.projectionMatrix)
     // prettier-ignore
     this.device.queue.writeBuffer(
-      this.gpuBuffer, 
+      this.buffer, 
       4 * 16 * 0,
       this.projectionMatrix.buffer, 
       this.projectionMatrix.byteOffset, 

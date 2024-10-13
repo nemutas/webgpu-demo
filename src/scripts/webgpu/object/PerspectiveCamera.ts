@@ -29,11 +29,16 @@ export class PerspectiveCamera extends Camera {
     mat4.perspective((this.fovDeg * Math.PI) / 180, this.aspect, this.near, this.far, this.projectionMatrix)
     // prettier-ignore
     this.device.queue.writeBuffer(
-      this.gpuBuffer, 
+      this.buffer, 
       4 * 16 * 0,
       this.projectionMatrix.buffer, 
       this.projectionMatrix.byteOffset, 
       this.projectionMatrix.byteLength
     )
+  }
+
+  updateAspect(aspect: number) {
+    this.aspect = aspect
+    this.updateProjectionMatrix()
   }
 }

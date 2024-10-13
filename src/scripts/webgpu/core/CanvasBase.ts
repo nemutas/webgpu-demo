@@ -1,5 +1,5 @@
 import { Clock } from '../object/Clock'
-import { GPU } from './gpu'
+import { calcCanvasResolution, GPU } from './gpu'
 
 export abstract class CanvasBase {
   protected readonly device: GPUDevice
@@ -22,11 +22,7 @@ export abstract class CanvasBase {
   }
 
   private _resize() {
-    const canvas = this.gpu.context.canvas
-    const width = window.innerWidth * window.devicePixelRatio
-    const height = window.innerHeight * window.devicePixelRatio
-    canvas.width = Math.max(1, Math.min(width, this.device.limits.maxTextureDimension2D))
-    canvas.height = Math.max(1, Math.min(height, this.device.limits.maxTextureDimension2D))
+    calcCanvasResolution(this.device, this.gpu.context.canvas as HTMLCanvasElement)
   }
 
   protected get contextView() {
