@@ -38,6 +38,7 @@ export default defineConfig(() => {
           page("004_instance"),
           page("005_compute_instanced_matrix"),
           page("006_postprocessing"),
+          page("007_lines"),
         ],
       },
     },
